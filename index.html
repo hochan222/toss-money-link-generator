@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Random TOSS Links</title>
+  </head>
+  <body>
+    <h1>Random TOSS Links</h1>
+    <p id="randomLink"></p>
+    <button id="generateButton">Generate Random Link</button>
+
+    <script>
+      const LOCAL_STORAGE_CLICK_LINK = "clickedLinks";
+
+      function generateRandomString(length) {
+        const characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let randomString = "";
+
+        for (let i = 0; i < length; i++) {
+          const randomIndex = Math.floor(Math.random() * characters.length);
+          randomString += characters.charAt(randomIndex);
+        }
+
+        return randomString;
+      }
+
+      function generateRandomHash() {
+        const HASH_LENGTH = 7;
+        let randomString = generateRandomString(HASH_LENGTH);
+        const clickedLinks = JSON.parse(
+          localStorage.getItem(LOCAL_STORAGE_CLICK_LINK)
+        );
+
+        if (clickedLinks) {
+          while (clickedLinks.includes(randomString)) {
+            randomString = generateRandomString(HASH_LENGTH);
+          }
+        }
+
+        return randomString;
+      }
+
+      function addHashLocalStorage(generatedHash) {
+        const clickedLinks = JSON.parse(
+          localStorage.getItem(LOCAL_STORAGE_CLICK_LINK)
+        );
+
+        const getHashClickedLinks = () => {
+          if (clickedLinks) {
+            clickedLinks.push(generatedHash);
+            return clickedLinks;
+          }
+          return [generatedHash];
+        };
+
+        localStorage.setItem(
+          LOCAL_STORAGE_CLICK_LINK,
+          JSON.stringify(getHashClickedLinks())
+        );
+      }
+
+      function displayRandomLink() {
+        const hash = generateRandomHash();
+        const link = `https://toss.im/_ul/${hash}`;
+
+        randomLinkElement.textContent = "";
+        const linkElement = document.createElement("a");
+        linkElement.href = link;
+        linkElement.textContent = link;
+        randomLinkElement.appendChild(linkElement);
+
+        linkElement.addEventListener("click", function () {
+          addHashLocalStorage(hash);
+        });
+      }
+
+      const randomLinkElement = document.getElementById("randomLink");
+      const generateButton = document.getElementById("generateButton");
+
+      generateButton.addEventListener("click", function () {
+        displayRandomLink();
+      });
+    </script>
+  </body>
+</html>
