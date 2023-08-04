@@ -6,6 +6,7 @@
   <body>
     <h1>Random TOSS Links</h1>
     <p id="randomLink"></p>
+    <p id="clickedLinksInfo"></p>
     <button id="generateButton">Generate Random Link</button>
 
     <script>
@@ -76,9 +77,14 @@
 
       const randomLinkElement = document.getElementById("randomLink");
       const generateButton = document.getElementById("generateButton");
+      const clickedLinksInfo = document.getElementById("clickedLinksInfo");
 
       generateButton.addEventListener("click", function () {
         displayRandomLink();
+
+        clickedLinksInfo.innerHTML = `save hash lists: ${JSON.parse(
+          localStorage.getItem(LOCAL_STORAGE_CLICK_LINK)
+        ).join("<br>")}`;
       });
     </script>
   </body>
